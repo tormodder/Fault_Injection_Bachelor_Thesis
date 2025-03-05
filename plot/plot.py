@@ -1,8 +1,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
-file = "sample_data.csv"
+filename = "test_data.csv"
+
+file = os.path.join(os.path.dirname(__file__), filename)
 data = pd.read_csv(file, header=None)
 
 # Flatten data to 1D numPy array
@@ -32,11 +35,10 @@ for i in range(1, len(counter_values)):
         filtered_values.append(counter_values[i])
 
 filtered_values = np.array(filtered_values)
-
 plt.figure(figsize=(25,5))
 plt.plot(filtered_values, marker="o", linestyle="-", markersize=3, markevery=10)
 plt.xlabel("μs")
 plt.ylabel("number")
 plt.title("Values over time")
 plt.grid(True)
-plt.show()
+plt.savefig("plot.png")
