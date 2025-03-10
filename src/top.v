@@ -1,7 +1,7 @@
 module top (
     input CLK_50,
     input [0:0] SW,
-    output [16:0] count_out,
+    output [15:0] count_out,
     output clk_out,
     output uart_tx
 );
@@ -15,7 +15,7 @@ module top (
     uart_tx uart (
         .clk(CLK_50),
         .rst(SW),
-        .data(count_out[7:0]),
+        .data(count_out[15:0]),
         .tx(uart_tx)
     );
 

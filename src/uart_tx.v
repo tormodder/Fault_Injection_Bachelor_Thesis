@@ -1,7 +1,7 @@
 module uart_tx (
     input wire clk,
     input wire rst,
-    input wire [16:0] data,
+    input wire [15:0] data,
     output reg tx
 );
 
@@ -22,7 +22,7 @@ module uart_tx (
         end
         else if (!sending)
         begin
-            tx_shift_reg <= {1'b1, data[7:0], 1'b0};
+            tx_shift_reg <= {1'b1, data[15:0], 1'b0};
             sending <= 1;
             bit_counter <= 0;
         end
