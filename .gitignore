@@ -1,3 +1,15 @@
+######
+# Verilog
+######
+hw_src/*
+!hw_src/src/
+!hw_src/src/**
+
+
+######
+# Python
+######
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
