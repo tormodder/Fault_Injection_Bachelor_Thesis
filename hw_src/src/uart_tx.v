@@ -9,7 +9,7 @@ module uart_tx (
     parameter CLOCK_FREQ = 50000000;
     parameter TICKS_PER_BIT = CLOCK_FREQ / BAUD_RATE;
 
-    reg [9:0] tx_shift_reg; // 1 start bit 8 data bits 1 stop bit
+    reg [16:0] tx_shift_reg; // 1 start bit 15 data bits 1 stop bit
     reg [15:0] bit_counter; // counter for timing
 
     reg sending;
@@ -35,8 +35,8 @@ module uart_tx (
             else
             begin
                 bit_counter <= 0;
-                tx_shift_reg <=  {1'b1, tx_shift_reg[9:1]};
-                if (tx_shift_reg == 10'b1111111111)
+                tx_shift_reg <=  {1'b1, tx_shift_reg[16:1]};
+                if (tx_shift_reg == 17'b00000000000000001)
                 begin
                     sending <= 0;
                 end
