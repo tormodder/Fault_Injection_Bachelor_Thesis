@@ -1,0 +1,46 @@
+<?xml version="1" encoding="UTF-8"?>
+<GAO_CONFIG>
+    <Version>3.0</Version>
+    <Mode>Lite</Mode>
+    <AoCore_Lite index="0" sample_clock="CLK_50" trig_type="0" capture_amount="1024" implemention="0" input_register_enabled="0" capture_init_data_enabled="0" module_name="top">
+        <SignalList>
+            <Signal capture_enable="true">w_Tx_Active</Signal>
+            <Signal capture_enable="true">w_Tx_Done</Signal>
+            <Signal capture_enable="true">w_Tx_DV</Signal>
+            <Bus capture_enable="true" name="w_Count[7:0]">
+                <Signal>w_Count[7]</Signal>
+                <Signal>w_Count[6]</Signal>
+                <Signal>w_Count[5]</Signal>
+                <Signal>w_Count[4]</Signal>
+                <Signal>w_Count[3]</Signal>
+                <Signal>w_Count[2]</Signal>
+                <Signal>w_Count[1]</Signal>
+                <Signal>w_Count[0]</Signal>
+            </Bus>
+            <Signal capture_enable="true">my_counter/i_Rst</Signal>
+            <Signal capture_enable="true">my_counter/i_Tx_Active</Signal>
+            <Bus capture_enable="true" name="my_counter/o_Count[7:0]">
+                <Signal>my_counter/o_Count[7]</Signal>
+                <Signal>my_counter/o_Count[6]</Signal>
+                <Signal>my_counter/o_Count[5]</Signal>
+                <Signal>my_counter/o_Count[4]</Signal>
+                <Signal>my_counter/o_Count[3]</Signal>
+                <Signal>my_counter/o_Count[2]</Signal>
+                <Signal>my_counter/o_Count[1]</Signal>
+                <Signal>my_counter/o_Count[0]</Signal>
+            </Bus>
+            <Signal capture_enable="true">my_counter/o_Tx_DV</Signal>
+            <Signal capture_enable="true">uart/i_Tx_DV</Signal>
+            <Signal capture_enable="true">uart/o_Tx_Active</Signal>
+            <Signal capture_enable="true">uart/o_Tx_Serial</Signal>
+            <Signal capture_enable="true">uart/o_Tx_Done</Signal>
+            <Bus capture_enable="true" name="uart/r_SM_Main[2:0]">
+                <Signal>uart/r_SM_Main[2]</Signal>
+                <Signal>uart/r_SM_Main[1]</Signal>
+                <Signal>uart/r_SM_Main[0]</Signal>
+            </Bus>
+            <Signal capture_enable="true">uart/r_Tx_Done</Signal>
+        </SignalList>
+    </AoCore_Lite>
+    <GAO_ID>0011001100011111</GAO_ID>
+</GAO_CONFIG>
