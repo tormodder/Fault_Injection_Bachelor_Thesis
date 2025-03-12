@@ -16,8 +16,17 @@ IO_PORT "CLK_50" IO_TYPE=LVCMOS18 PULL_MODE=UP BANK_VCCIO=1.8;
 IO_LOC "clk_out" 141;
 IO_PORT "clk_out" PULL_MODE=UP BANK_VCCIO=1.8;
 
-IO_LOC "o_Tx_Serial" 137;
-IO_PORT "o_Tx_Serial" PULL_MODE=UP BANK_VCCIO=1.8;
+//IO_LOC "o_Tx_Serial" 137;
+//IO_PORT "o_Tx_Serial" PULL_MODE=UP BANK_VCCIO=1.8;
 
 IO_LOC "o_Rst" 133;
 IO_PORT "o_Rst" PULL_MODE=UP BANK_VCCIO=1.8;
+
+IO_LOC "count_out[0]"  69;
+IO_LOC "count_out[1]"  75;
+IO_LOC "count_out[2]"  80;
+IO_LOC "count_out[3]"  84;
+IO_LOC "count_out[4]"  83;
+IO_LOC "count_out[5]"  112;
+IO_LOC "count_out[6]"  116;
+IO_LOC "count_out[7]"  120;

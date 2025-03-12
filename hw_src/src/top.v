@@ -1,9 +1,9 @@
 module top (
     input CLK_50,
     input [0:0] SW,
-//    output [7:0] count_out,
+    output [7:0] count_out,
     output clk_out,
-    output o_Tx_Serial,
+    //output o_Tx_Serial,
     output o_Rst
 );
 
@@ -14,16 +14,16 @@ module top (
 
     parameter BAUD_RATE = 115200;
     parameter CLOCK_FREQ = 50000000;
-    parameter TICKS_PER_BIT = CLOCK_FREQ / BAUD_RATE;
+    parameter TICKS_PER_BIT = 434; //CLOCK_FREQ / BAUD_RATE;
 
     counter my_counter (
         .i_Clk(CLK_50),
         .i_Rst(SW),
-        .i_Tx_Active(w_Tx_Active),
+        .i_Tx_Active(1'b0),
         .o_Tx_DV(w_Tx_DV),
         .o_Count(w_Count)
     );
-
+/*
     uart_tx #(.CLKS_PER_BIT(TICKS_PER_BIT)) uart (
         .i_Clock(CLK_50),
         .i_Tx_DV(w_Tx_DV),
@@ -32,7 +32,9 @@ module top (
         .o_Tx_Serial(o_Tx_Serial),
         .o_Tx_Done(w_Tx_Done)
     );
-
+*/
     assign clk_out = CLK_50;
     assign o_Rst = SW;
+    assign count_out = w_Count;
+
 endmodule

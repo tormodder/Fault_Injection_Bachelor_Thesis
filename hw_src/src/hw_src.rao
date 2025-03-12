@@ -4,9 +4,16 @@
     <Mode>Lite</Mode>
     <AoCore_Lite index="0" sample_clock="CLK_50" trig_type="0" capture_amount="1024" implemention="0" input_register_enabled="0" capture_init_data_enabled="0" module_name="top">
         <SignalList>
-            <Signal capture_enable="true">w_Tx_Active</Signal>
-            <Signal capture_enable="true">w_Tx_Done</Signal>
-            <Signal capture_enable="true">w_Tx_DV</Signal>
+            <Bus capture_enable="true" name="count_out[7:0]">
+                <Signal>count_out[7]</Signal>
+                <Signal>count_out[6]</Signal>
+                <Signal>count_out[5]</Signal>
+                <Signal>count_out[4]</Signal>
+                <Signal>count_out[3]</Signal>
+                <Signal>count_out[2]</Signal>
+                <Signal>count_out[1]</Signal>
+                <Signal>count_out[0]</Signal>
+            </Bus>
             <Bus capture_enable="true" name="w_Count[7:0]">
                 <Signal>w_Count[7]</Signal>
                 <Signal>w_Count[6]</Signal>
@@ -17,8 +24,6 @@
                 <Signal>w_Count[1]</Signal>
                 <Signal>w_Count[0]</Signal>
             </Bus>
-            <Signal capture_enable="true">my_counter/i_Rst</Signal>
-            <Signal capture_enable="true">my_counter/i_Tx_Active</Signal>
             <Bus capture_enable="true" name="my_counter/o_Count[7:0]">
                 <Signal>my_counter/o_Count[7]</Signal>
                 <Signal>my_counter/o_Count[6]</Signal>
@@ -29,18 +34,8 @@
                 <Signal>my_counter/o_Count[1]</Signal>
                 <Signal>my_counter/o_Count[0]</Signal>
             </Bus>
-            <Signal capture_enable="true">my_counter/o_Tx_DV</Signal>
-            <Signal capture_enable="true">uart/i_Tx_DV</Signal>
-            <Signal capture_enable="true">uart/o_Tx_Active</Signal>
-            <Signal capture_enable="true">uart/o_Tx_Serial</Signal>
-            <Signal capture_enable="true">uart/o_Tx_Done</Signal>
-            <Bus capture_enable="true" name="uart/r_SM_Main[2:0]">
-                <Signal>uart/r_SM_Main[2]</Signal>
-                <Signal>uart/r_SM_Main[1]</Signal>
-                <Signal>uart/r_SM_Main[0]</Signal>
-            </Bus>
-            <Signal capture_enable="true">uart/r_Tx_Done</Signal>
+            <Signal capture_enable="true">my_counter/i_Rst</Signal>
         </SignalList>
     </AoCore_Lite>
-    <GAO_ID>0011001100011111</GAO_ID>
+    <GAO_ID>1110101101100100</GAO_ID>
 </GAO_CONFIG>

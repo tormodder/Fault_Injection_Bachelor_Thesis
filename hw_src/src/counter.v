@@ -6,6 +6,7 @@ module counter (
     output reg [7:0] o_Count
 );
 
+    
     always @ (posedge i_Clk)
     begin
         if (i_Rst)
