@@ -1,0 +1,5 @@
+- Run `python ./clock_freq_floatstream_glitches_server.py` first
+- Run `python ./ clock_observer_statistical_data_extractor.py` second
+- Let run for a bit to collect data
+- Close the window showing the servers output
+- The observer will do its FFT analysis and create a plot
