@@ -49,8 +49,12 @@ def update(frame):
     ax.set_title('Moch Clock Frequency')
     
     # Send the clock frequency to the client
-    data = json.dumps({"frame": frame, "frequency": freq})
-    conn.sendall((data + "\n").encode())
+    # data = json.dumps({"frame": frame, "frequency": freq})
+    # conn.sendall((data + "\n").encode())
+    
+    # Send the signal to (FFTdata_obsever.py) for analysis
+    data = json.dumps(freq)
+    conn.sendall((f'{data}\n').encode())   # REMOVE newline character here and in analyzer
     
 ani = animation.FuncAnimation(fig, update, interval=60)
 plt.show()

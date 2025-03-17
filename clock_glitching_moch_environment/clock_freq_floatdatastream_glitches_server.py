@@ -1,4 +1,5 @@
 # Live plot code
+import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import socket
@@ -10,48 +11,39 @@ HOST, PORT = 'localhost', 9999
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((HOST, PORT))
 sock.listen(1)
-conn, _ = sock.accept() # Wait for a connection
+print(f'Broadcasting Clock Signal on {HOST}:{PORT}')
+
+# Wait for a connection
+conn, addr = sock.accept() 
+print(f'Connected to FFT analyzer at {addr}')
 
 
-# Create a firgure and axis
-fig, ax = plt.subplots()
-x_data, y_data = [], []
-line, = ax.plot([], [], 'r-', label='Clock Frequency')
 
-def update(frame):
-    global x_data, y_data
-    
-    # Create a fake clock frequency based on animation frame number
-    if (frame % 10) < 5:
-        freq = random.uniform(0.9, 1.0)
-    else:
-        freq = random.uniform(0.0, 0.1)
-    
-    # Introduce random glitches
-    if random.random() < 0.03:
-        freq = 1 - freq
+try:
+    # Send simulated signal to the client
+    counter = 0
+    while True:
+        # Create a fake clock frequency
+        if (counter % 10) < 5:
+            freq = random.uniform(0.9, 1.0)
+        else:
+            freq = random.uniform(0.0, 0.1)
         
-    x_data.append(frame)
-    y_data.append(freq)
+        # Introduce random glitches
+        if random.random() < 0.03:
+            freq = 1 - freq
     
-    # 50 reading sliding window
-    x_data = x_data[-50:]
-    y_data = y_data[-50:]
-    
-    ax.clear()
-    ax.plot(x_data, y_data, 'r-', label='Clock Frequency')
-    ax.set_ylim(-1, 2)
-    ax.set_xlim(max(0, frame - 50), frame +1)
-    ax.set_xlabel(' Time (updates)')
-    ax.set_ylabel('Frequency')
-    ax.legend()
-    ax.set_title('Moch Clock Frequency')
-    
-    # Send the clock frequency to the client as "bitstream"
-    data = json.dumps(freq)
-    print(data)
-    conn.sendall((data).encode())
-    
-ani = animation.FuncAnimation(fig, update, interval=60)
-plt.show()
-conn.close()
+
+        # Send the signal
+        data = json.dumps(freq)
+        conn.sendall((f'{data}\n').encode())   # REMOVE newline character here and in analyzer
+        
+        #Increament the counter and sleep
+        counter += 1
+        time.sleep(0.05)
+except (BrokenPipeError, ConnectionResetError):
+    print('Client disconnected')
+finally:
+    conn.close()
+    sock.close()
+    print('Broadcasting stopped')
