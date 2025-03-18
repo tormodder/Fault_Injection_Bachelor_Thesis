@@ -10,9 +10,9 @@ import matplotlib.animation as animation
 class SignalAnalyzer:
     def __init__(self):
         # Data storage
-        self.signal_window = collections.deque(maxlen=50) # Store the last 50 signals
-        self.time_window = collections.deque(maxlen=50) # Store the last 50 time points
-        self.entire_signal = collections.deque(maxlen=1000) # For FFT analysis
+        self.signal_window = collections.deque(maxlen=50) # last 50 signals
+        self.time_window = collections.deque(maxlen=50) # last 50 time points
+        self.entire_signal = collections.deque(maxlen=1000) # for FFT analysis
         self.fft_freqs = np.array([])
         self.fft_amplitudes = np.array([])
         self.counter = 0
@@ -28,7 +28,7 @@ class SignalAnalyzer:
         
         # Raw signal plot
         self.line1, = self.ax1.plot([], [], 'r-', label='Raw Signal')
-        self.ax1.set_ylim(-0.1, 1.1)
+        self.ax1.set_ylim(-1, 4)
         self.ax1.set_xlabel('Time')
         self.ax1.set_ylabel('Amplitude')
         self.ax1.set_title('Live Clock Signal')
@@ -44,7 +44,7 @@ class SignalAnalyzer:
         self.ax2.grid(True)
         
         # Status text
-        self.status_text = self.fig.text(0.002, 0.002, '', fontsize=8)
+        self.status_text = self.fig.text(0.02, 0.02, '', fontsize=8)
         
         # Start the signal thread receiver
         self.receiver_thread = None
@@ -58,7 +58,8 @@ class SignalAnalyzer:
             print(f'Connected to signal broadcaster at {host}:{port}')
         
             # Start the signal receiver thread
-            self.receiver_thread = threading.Thread(target=self.receive_data, daemon=True)
+            self.receiver_thread = threading.Thread(target=self.receive_data, 
+                                                    daemon=True)
             self.receiver_thread.start()
             
             return True
@@ -79,7 +80,8 @@ class SignalAnalyzer:
                 
                 # Add to buffer and process
                 self.data_buffer += data
-                lines = self.data_buffer.split('\n')   # REMOVE newline character here and in broadcaster
+                # REMOVE newline character since realworld ain't that perfect
+                lines = self.data_buffer.split('\n')
             
                 # Last line might be incomplete, so don't process it
                 self.data_buffer = lines.pop() if lines else ''
@@ -88,7 +90,7 @@ class SignalAnalyzer:
                 for line in lines:
                     try:
                         signal = json.loads(line)
-                        self.process_signal(signal)  # function below
+                        self.process_signal(signal)
                     except json.JSONDecodeError as e:
                         print(f'Error decoding JSON: {e}')
                         
@@ -107,7 +109,7 @@ class SignalAnalyzer:
         
         # Perform FFT analysis given enough data
         if len(self.entire_signal) > 10:
-            self.perform_fft()  # function below
+            self.perform_fft()
             
     # Perform FFT analysis
     def perform_fft(self):
@@ -130,7 +132,7 @@ class SignalAnalyzer:
             time_array = np.array(self.time_window)
             signal_array = np.array(self.signal_window)
             self.ax1.plot(time_array, signal_array, 'r-', label='Raw Signal')
-            self.ax1.set_ylim(-0.1, 1.1)
+            self.ax1.set_ylim(min(-1, np.min(signal_array) - 0.1), max(3.5, np.max(signal_array) + 0.1))
             self.ax1.set_xlim(max(0, self.counter -50), self.counter +1)
             self.ax1.set_xlabel('Time')
             self.ax1.set_ylabel('Amplitude')
@@ -141,21 +143,30 @@ class SignalAnalyzer:
         # Update the FFT plot
         self.ax2.clear()
         if len(self.fft_freqs) > 0 and len(self.fft_amplitudes) > 0:
-            self.ax2.plot(self.fft_freqs, self.fft_amplitudes, 'b-', label='FFT Analysis')
+            self.ax2.plot(self.fft_freqs, 
+                          self.fft_amplitudes, 
+                          'b-', 
+                          label='FFT Analysis')
             
             # Find and mark dominant frequency
             if len(self.fft_freqs) > 1 and len(self.fft_amplitudes) > 1:
-                peak_idx = np.argmax(self.fft_amplitudes[1:]) + 1 # Skip DC component ?????
+                peak_idx = np.argmax(self.fft_amplitudes[1:])
                 if peak_idx < len(self.fft_freqs):
                     peak_freq = self.fft_freqs[peak_idx]
                     peak_amp = self.fft_amplitudes[peak_idx]
                     self.ax2.plot(peak_freq, peak_amp, 'ro')
-                    self.ax2.annotate(f'{peak_freq:.2f}', (peak_freq, peak_amp), textcoords="offset points", xytext=(5,5))
+                    self.ax2.annotate(f'{peak_freq:.2f}', 
+                                      (peak_freq, peak_amp), 
+                                      textcoords="offset points", 
+                                      xytext=(5,5))
             
             # Set reasonable limits
+            if len(self.fft_amplitudes) > 0:
+                max_amp = np.max(self.fft_amplitudes)  
+            else: max_amp = 0
+            
             self.ax2.set_xlim(0, 0.5) # Nyquist limit (read more about this)
-            max_amp = np.max(self.fft_amplitudes) if len(self.fft_amplitudes) > 0 else 0
-            self.ax2.set_ylim(0, max_amp * 1.2)
+            self.ax2.set_ylim(0, max_amp)
             
             self.ax2.set_xlabel('Frequency')
             self.ax2.set_ylabel('Amplitude')
@@ -164,7 +175,7 @@ class SignalAnalyzer:
             self.ax2.grid(True)
             
         # Update the status text
-        status = f'Connected: {self.connected} | Signal Length: {len(self.entire_signal)}'
+        status = f'Connected: {self.connected} | Signal Length: {self.counter}'
         self.status_text.set_text(status)
         
         # Adjust layout
@@ -180,7 +191,10 @@ class SignalAnalyzer:
             return
         
         # Set up the animation
-        ani = animation.FuncAnimation(self.fig, self.update_plot, interval=100, blit=False)
+        ani = animation.FuncAnimation(self.fig, 
+                                      self.update_plot, 
+                                      interval=100, 
+                                      blit=False)
         plt.show()
         
         # Close the connection

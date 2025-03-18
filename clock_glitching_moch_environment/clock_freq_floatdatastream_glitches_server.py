@@ -36,11 +36,12 @@ try:
 
         # Send the signal
         data = json.dumps(freq)
-        conn.sendall((f'{data}\n').encode())   # REMOVE newline character here and in analyzer
+        # REMOVE newline character since realworld ain't that perfect
+        conn.sendall((f'{data}\n').encode())
         
         #Increament the counter and sleep
         counter += 1
-        time.sleep(0.05)
+        # time.sleep(0.05)
 except (BrokenPipeError, ConnectionResetError):
     print('Client disconnected')
 finally:

@@ -19,6 +19,7 @@ fig, ax = plt.subplots()
 x_data, y_data = [], []
 line, = ax.plot([], [], 'r-', label='Clock Frequency')
 
+
 def update(frame):
     global x_data, y_data
     
@@ -48,14 +49,12 @@ def update(frame):
     ax.legend()
     ax.set_title('Moch Clock Frequency')
     
-    # Send the clock frequency to the client
-    # data = json.dumps({"frame": frame, "frequency": freq})
-    # conn.sendall((data + "\n").encode())
-    
     # Send the signal to (FFTdata_obsever.py) for analysis
     data = json.dumps(freq)
-    conn.sendall((f'{data}\n').encode())   # REMOVE newline character here and in analyzer
-    
+    # REMOVE newline character since realworld ain't that perfect
+    conn.sendall((f'{data}\n').encode())   
+
+
 ani = animation.FuncAnimation(fig, update, interval=60)
 plt.show()
 conn.close()
