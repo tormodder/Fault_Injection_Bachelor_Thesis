@@ -22,22 +22,28 @@ print(f'Connected to FFT analyzer at {addr}')
 try:
     # Send simulated signal to the client
     counter = 0
-    while True:
+    glitch_performed = False
+    
+    while counter < 2000:
         # Create a fake clock frequency
-        if (counter % 10) < 5:
+        if (counter % 4) < 2:
             freq = random.uniform(0.9, 1.0)
         else:
             freq = random.uniform(0.0, 0.1)
         
-        # Introduce random glitches
-        if random.random() < 0.03:
-            freq = 1 - freq
+        # Introduce a single random glitch at a specific frame for analysis
+        if counter > 500 and not glitch_performed:
+        # if not glitch_performed:
+            if random.random() < 0.01:
+                freq = 1 - freq
+                print("GLITCH PERFORMED at time: ", counter)
+                glitch_performed = True
+
     
 
         # Send the signal
         data = json.dumps(freq)
-        # REMOVE newline character since realworld ain't that perfect
-        conn.sendall((f'{data}\n').encode())
+        conn.sendall((f'{data}').encode())
         
         #Increament the counter and sleep
         counter += 1

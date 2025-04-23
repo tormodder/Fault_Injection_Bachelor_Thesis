@@ -6,6 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
 
+# min01 = 200
+# min02 = 200
+# min03 = 200
+min04 = 200
+# max01 = 0
+# max02 = 0
+# max03 = 0
+max04 = 0
 
 class SignalAnalyzer:
     def __init__(self):
@@ -23,17 +31,18 @@ class SignalAnalyzer:
         self.data_buffer = ''
         
         # Set up the live plot
-        self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        # self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        self.fig, (self.ax2) = plt.subplots(1, 1, figsize=(10, 8))
         self.fig.tight_layout(pad=4.0)
         
         # Raw signal plot
-        self.line1, = self.ax1.plot([], [], 'r-', label='Raw Signal')
-        self.ax1.set_ylim(-1, 4)
-        self.ax1.set_xlabel('Time')
-        self.ax1.set_ylabel('Amplitude')
-        self.ax1.set_title('Live Clock Signal')
-        self.ax1.legend()
-        self.ax1.grid(True)
+        # self.line1, = self.ax1.plot([], [], 'r-', label='Raw Signal')
+        # self.ax1.set_ylim(-1, 4)
+        # self.ax1.set_xlabel('Time')
+        # self.ax1.set_ylabel('Amplitude')
+        # self.ax1.set_title('Clock Signal')
+        # self.ax1.legend()
+        # self.ax1.grid(True)
         
         # Frequency domain plot
         self.line2, = self.ax2.plot([], [], 'b-', label='FFT Analysis')
@@ -80,7 +89,7 @@ class SignalAnalyzer:
                 
                 # Add to buffer and process
                 self.data_buffer += data
-                # REMOVE newline character since realworld ain't that perfect
+                # REMOVE newline character since realworld is not that perfect
                 lines = self.data_buffer.split('\n')
             
                 # Last line might be incomplete, so don't process it
@@ -113,6 +122,9 @@ class SignalAnalyzer:
             
     # Perform FFT analysis
     def perform_fft(self):
+        # global min01, max01, min02, max02, min03, max03, min04, max04
+        global max04, min04
+        
         signal_array = np.array(self.entire_signal)
         
         # Perform FFT
@@ -124,21 +136,96 @@ class SignalAnalyzer:
         self.fft_freqs = freqs[:half_index]
         self.fft_amplitudes = np.abs(freq_spectrum)[:half_index]
         
+        
+        
+        # Sus frequency observer
+        # Define given values
+        fft_amplitudes = self.fft_amplitudes  # Your FFT amplitude array
+        max_frequency = 0.5  # Maximum frequency range in your FFT
+        fft_length = len(fft_amplitudes)  # Total number of FFT bins
+        frequency_resolution = max_frequency / fft_length  # Step size per bin
+
+        # Define target frequencies
+        target_frequencies = [0.1, 0.2, 0.3, 0.4]
+
+        # Compute indices
+        indices = [int(f / frequency_resolution) for f in target_frequencies if int(f / frequency_resolution) < fft_length]
+
+        # Extract values
+        extracted_values = fft_amplitudes[indices]
+        # print(f'{extracted_values = }')
+
+        # if (extracted_values[0] > max01):
+        #     max01 = extracted_values[0]
+        # elif (extracted_values[0] < min01):
+        #     min01 = extracted_values[0]
+
+        # if (extracted_values[1] > max02):
+        #     max02 = extracted_values[1]
+        # elif (extracted_values[1] < min02):
+        #     min02 = extracted_values[1]
+        
+        # if (extracted_values[2] > max03):
+        #     max03 = extracted_values[2]
+        # elif (extracted_values[2] < min03):
+        #     min03 = extracted_values[2]
+        # if (self.counter > 20 and extracted_values[3] > 0.2):
+            # print(f'Determined glitch at frame: {self.counter}')
+        
+        # if (extracted_values[3] > max04):
+        #     print(f'Max increase of: {extracted_values[3] - max04} at frame: {self.counter}')
+        #     if ((extracted_values[3] - max04) > 0.2 and self.counter > 25):
+        #         print(f'Determined glitch at frame: {self.counter}')
+        #     max04 = extracted_values[3]
+        # elif (extracted_values[3] < min04):
+        #     min04 = extracted_values[3]
+            
+        # if (extracted_values[1] > max04):
+        #     print(f'Max increase of: {(extracted_values[1] - max04)} at frame: {self.counter}')
+        #     if ((extracted_values[1] - max04) > 0.2 and self.counter > 30):
+        #         print(f'Determined glitch at frame: {self.counter}')
+        #     max04 = extracted_values[1]
+        # elif (extracted_values[1] < min04):
+        #     print(f'Min decrease of: {(min04 - extracted_values[1])} at frame: {self.counter}')
+        #     if ((min04 - extracted_values[1]) > 0.2 and self.counter > 30):
+        #         print(f'Determined glitch at frame: {self.counter}')
+        #     min04 = extracted_values[1]
+        
+        
+        # Print results
+        # print(f'Min 0.1: {min01}')
+        # print(f'Max 0.1: {max01}')
+        # print(f'Min 0.2: {min02}')
+        # print(f'Max 0.2: {max02}')
+        # print(f'Min 0.3: {min03}')
+        # print(f'Max 0.3: {max03}')
+        # print(f'Min 0.4: {min04}')
+        # print(f'Max 0.4: {max04}')
+        # print(f"Amplitude at 0.1 Hz: {extracted_values[0]}")
+        # print(f"Amplitude at 0.2 Hz: {extracted_values[1]}")
+        # print(f'FFT freqs: {self.fft_freqs}') # Debugging
+        
+        
+        
+        
+        
+        
+        
     # Update the plot
     def update_plot(self, frame):
         # Update the raw signal plot
-        self.ax1.clear()
-        if self.time_window and self.signal_window:
-            time_array = np.array(self.time_window)
-            signal_array = np.array(self.signal_window)
-            self.ax1.plot(time_array, signal_array, 'r-', label='Raw Signal')
-            self.ax1.set_ylim(min(-1, np.min(signal_array) - 0.1), max(3.5, np.max(signal_array) + 0.1))
-            self.ax1.set_xlim(max(0, self.counter -50), self.counter +1)
-            self.ax1.set_xlabel('Time')
-            self.ax1.set_ylabel('Amplitude')
-            self.ax1.set_title('Live Clock Signal')
-            self.ax1.legend()
-            self.ax1.grid(True)
+        # self.ax1.clear()
+        # if self.time_window and self.signal_window:
+        #     time_array = np.array(self.time_window)
+        #     signal_array = np.array(self.signal_window)
+        #     self.ax1.plot(time_array, signal_array, 'r-', label='Raw Signal')
+        #     self.ax1.set_ylim(min(-1, np.min(signal_array) - 0.1), 
+        #                       max(3.5, np.max(signal_array) + 0.1))
+        #     self.ax1.set_xlabel('Time')
+        #     self.ax1.set_ylabel('Amplitude')
+        #     self.ax1.set_title('Clock Signal - unglitched')
+        #     self.ax1.legend()
+        #     self.ax1.grid(True)
         
         # Update the FFT plot
         self.ax2.clear()
@@ -166,11 +253,12 @@ class SignalAnalyzer:
             else: max_amp = 0
             
             self.ax2.set_xlim(0, 0.5) # Nyquist limit (read more about this)
-            self.ax2.set_ylim(0, max_amp)
+            # self.ax2.set_ylim(0, max_amp)
+            self.ax2.set_ylim(0, 10)
             
             self.ax2.set_xlabel('Frequency')
             self.ax2.set_ylabel('Amplitude')
-            self.ax2.set_title('Frequency Domain Analysis')
+            self.ax2.set_title('Frequency Domain Analysis - unlitched clock')
             self.ax2.legend()
             self.ax2.grid(True)
             
@@ -181,7 +269,8 @@ class SignalAnalyzer:
         # Adjust layout
         self.fig.tight_layout(pad=4.0, rect=[0, 0.03, 1, 0.97])
         
-        return self.line1, self.line2, self.status_text
+        # return self.line1, self.line2, self.status_text
+        return self.line2, self.status_text
     
     # Run the analyzer
     def run(self):

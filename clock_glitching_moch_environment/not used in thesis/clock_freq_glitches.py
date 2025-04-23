@@ -2,16 +2,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import random as rand
-import socket
-import json
-
-
-# Set up the socket server (for observation)
-HOST, PORT = 'localhost', 9999
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind((HOST, PORT))
-sock.listen(1)
-conn, _ = sock.accept() # Wait for a connection
 
 
 # Create a firgure and axis
@@ -19,7 +9,7 @@ fig, ax = plt.subplots()
 x_data, y_data = [], []
 line, = ax.plot([], [], 'r-', label='Clock Frequency')
 
-
+# Updates the animation at an interval defined below
 def update(frame):
     global x_data, y_data
     
@@ -30,8 +20,7 @@ def update(frame):
         freq = 0
         
     # Introduce random glitches
-    if rand.random() < 0.03:
-        freq = 1 - freq
+    freq = 1 - freq
     
     x_data.append(frame)
     y_data.append(freq)
@@ -49,12 +38,5 @@ def update(frame):
     ax.legend()
     ax.set_title('Moch Clock Frequency')
     
-    # Send the signal to (FFTdata_obsever.py) for analysis
-    data = json.dumps(freq)
-    # REMOVE newline character since realworld ain't that perfect
-    conn.sendall((f'{data}\n').encode())   
-
-
 ani = animation.FuncAnimation(fig, update, interval=60)
 plt.show()
-conn.close()

@@ -18,19 +18,16 @@ typedef struct{real Re; real Im;} complex;
 
 
 /* Print a vector of complexes as ordered pairs. */
-static void
-print_vector(
+static void print_vector(
 	     const char *title,
 	     complex *x,
-	     int n)
-{
+	     int n) {
   int i;
   printf("%s (dim=%d):", title, n);
   for(i=0; i<n; i++ ) printf(" %5.2f,%5.2f ", x[i].Re,x[i].Im);
   putchar('\n');
   return;
 }
-
 
 /* 
    fft(v,N):
@@ -45,9 +42,7 @@ print_vector(
    [8]   Let v[m] = ve[m] + w*vo[m]
    [9]   Let v[m+N/2] = ve[m] - w*vo[m]
  */
-void
-fft( complex *v, int n, complex *tmp )
-{
+void fft( complex *v, int n, complex *tmp ) {
   if(n>1) {			/* otherwise, do nothing and return */
     int k,m;    complex z, w, *vo, *ve;
     ve = tmp; vo = tmp+n/2;
@@ -70,7 +65,7 @@ fft( complex *v, int n, complex *tmp )
   }
   return;
 }
-
+
 /* 
    ifft(v,N):
    [0] If N==1 then return.
@@ -84,9 +79,7 @@ fft( complex *v, int n, complex *tmp )
    [8]   Let v[m] = ve[m] + w*vo[m]
    [9]   Let v[m+N/2] = ve[m] - w*vo[m]
  */
-void
-ifft( complex *v, int n, complex *tmp )
-{
+void ifft( complex *v, int n, complex *tmp ) {
   if(n>1) {			/* otherwise, do nothing and return */
     int k,m;    complex z, w, *vo, *ve;
     ve = tmp; vo = tmp+n/2;
@@ -109,11 +102,8 @@ ifft( complex *v, int n, complex *tmp )
   }
   return;
 }
-
 
-int
-main(void)
-{
+int main(void) {
   complex v[N], v1[N], scratch[N];
   int k;
 

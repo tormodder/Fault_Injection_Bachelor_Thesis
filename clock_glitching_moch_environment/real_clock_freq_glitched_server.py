@@ -14,6 +14,7 @@ conn, _ = sock.accept() # Wait for a connection
 
 
 # Broadcast the real clock frequency data
+# with open('./real_clock_data/exported_clock.csv', 'r') as real_clock_data:
 with open('./real_clock_data/exported_clock_glitched.csv', 'r') as real_clock_data:
     csv_reader = csv.reader(real_clock_data)
     # print(csv_reader)
