@@ -13,6 +13,7 @@ def parse_arguments():
     parser.add_argument("-f", "--float", type=bool, default=False, help="Jittery floating point clock signal.")
     parser.add_argument("-g", "--glitch", type=bool, default=False, help="Introduce a clock glitch.")
     parser.add_argument("-gf", "--glitchframe", type=int, default=500, help="Frame to introduce glitch.")
+    parser.add_argument("-fft", "--fftanalysis", type=bool, default=False, help="Perform FFT analysis.")
     return parser.parse_args()
 
 
@@ -57,6 +58,16 @@ def start_observer(binary, float):
         print(f"Failed to start observer program: {e}")
 
 
+def start_observer_fft():
+    """Start the observer program as a subprocess."""
+    observer_script = "./FFTdata_observer.py"
+    try:
+        subprocess.Popen(["python", observer_script])
+        print(f"Observer program '{observer_script}' started.")
+    except Exception as e:
+        print(f"Failed to start observer program: {e}")
+
+
 def main():
     args = parse_arguments()
     
@@ -67,7 +78,10 @@ def main():
     print("Arguments received:")
     print(f"Binary: {args.binary}, Float: {args.float}, Glitch: {args.glitch}, Glitch Frame: {args.glitchframe}")
     # Start the observer program
-    start_observer(args.binary, args.float)
+    if args.fftanalysis:
+        start_observer_fft()
+    else:
+        start_observer(args.binary, args.float)
 
     sock, conn = setup_socket()
 

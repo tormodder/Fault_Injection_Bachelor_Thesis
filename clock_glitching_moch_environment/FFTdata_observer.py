@@ -31,18 +31,18 @@ class SignalAnalyzer:
         self.data_buffer = ''
         
         # Set up the live plot
-        # self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1, figsize=(10, 8))
-        self.fig, (self.ax2) = plt.subplots(1, 1, figsize=(10, 8))
+        self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        # self.fig, (self.ax2) = plt.subplots(1, 1, figsize=(10, 8))
         self.fig.tight_layout(pad=4.0)
         
         # Raw signal plot
-        # self.line1, = self.ax1.plot([], [], 'r-', label='Raw Signal')
-        # self.ax1.set_ylim(-1, 4)
-        # self.ax1.set_xlabel('Time')
-        # self.ax1.set_ylabel('Amplitude')
-        # self.ax1.set_title('Clock Signal')
-        # self.ax1.legend()
-        # self.ax1.grid(True)
+        self.line1, = self.ax1.plot([], [], 'r-', label='Raw Signal')
+        self.ax1.set_ylim(-1, 4)
+        self.ax1.set_xlabel('Time')
+        self.ax1.set_ylabel('Amplitude')
+        self.ax1.set_title('Clock Signal')
+        self.ax1.legend()
+        self.ax1.grid(True)
         
         # Frequency domain plot
         self.line2, = self.ax2.plot([], [], 'b-', label='FFT Analysis')
@@ -214,18 +214,18 @@ class SignalAnalyzer:
     # Update the plot
     def update_plot(self, frame):
         # Update the raw signal plot
-        # self.ax1.clear()
-        # if self.time_window and self.signal_window:
-        #     time_array = np.array(self.time_window)
-        #     signal_array = np.array(self.signal_window)
-        #     self.ax1.plot(time_array, signal_array, 'r-', label='Raw Signal')
-        #     self.ax1.set_ylim(min(-1, np.min(signal_array) - 0.1), 
-        #                       max(3.5, np.max(signal_array) + 0.1))
-        #     self.ax1.set_xlabel('Time')
-        #     self.ax1.set_ylabel('Amplitude')
-        #     self.ax1.set_title('Clock Signal - unglitched')
-        #     self.ax1.legend()
-        #     self.ax1.grid(True)
+        self.ax1.clear()
+        if self.time_window and self.signal_window:
+            time_array = np.array(self.time_window)
+            signal_array = np.array(self.signal_window)
+            self.ax1.plot(time_array, signal_array, 'r-', label='Raw Signal')
+            self.ax1.set_ylim(min(-1, np.min(signal_array) - 0.1), 
+                              max(3.5, np.max(signal_array) + 0.1))
+            self.ax1.set_xlabel('Time')
+            self.ax1.set_ylabel('Amplitude')
+            self.ax1.set_title('Clock Signal')
+            self.ax1.legend()
+            self.ax1.grid(True)
         
         # Update the FFT plot
         self.ax2.clear()
@@ -252,13 +252,13 @@ class SignalAnalyzer:
                 max_amp = np.max(self.fft_amplitudes)  
             else: max_amp = 0
             
-            self.ax2.set_xlim(0, 0.5) # Nyquist limit (read more about this)
-            # self.ax2.set_ylim(0, max_amp)
-            self.ax2.set_ylim(0, 10)
+            self.ax2.set_xlim(0, 0.5) # Nyquist limit
+            self.ax2.set_ylim(0, max_amp)
+            # self.ax2.set_ylim(0, 10)
             
             self.ax2.set_xlabel('Frequency')
             self.ax2.set_ylabel('Amplitude')
-            self.ax2.set_title('Frequency Domain Analysis - unlitched clock')
+            self.ax2.set_title('Frequency Domain Analysis')
             self.ax2.legend()
             self.ax2.grid(True)
             
@@ -268,6 +268,9 @@ class SignalAnalyzer:
         
         # Adjust layout
         self.fig.tight_layout(pad=4.0, rect=[0, 0.03, 1, 0.97])
+        
+        
+        
         
         # return self.line1, self.line2, self.status_text
         return self.line2, self.status_text
