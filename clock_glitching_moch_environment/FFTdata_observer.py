@@ -6,14 +6,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
 
-# min01 = 200
-# min02 = 200
-# min03 = 200
+min01 = 200
+min02 = 200
+min03 = 200
 min04 = 200
-# max01 = 0
-# max02 = 0
-# max03 = 0
+max01 = 0
+max02 = 0
+max03 = 0
 max04 = 0
+mean_amplitudes = 0
 
 class SignalAnalyzer:
     def __init__(self):
@@ -58,6 +59,7 @@ class SignalAnalyzer:
         # Start the signal thread receiver
         self.receiver_thread = None
     
+    
     # Connect to the signal broadcaster
     def connect_to_broadcast(self, host='localhost', port=9999):
         try:
@@ -76,6 +78,7 @@ class SignalAnalyzer:
             print(f'Error connecting to signal broadcaster: {e}')
             self.connected = False
             return False
+    
     
     # Thread function to receive data from broadcaster
     def receive_data(self):
@@ -108,11 +111,13 @@ class SignalAnalyzer:
                 self.connected = False
                 break
             
+            
     # Process the signal
     def process_signal(self, signal):
         # Store the signal
         self.counter += 1
         self.time_window.append(self.counter)
+        
         self.signal_window.append(signal)
         self.entire_signal.append(signal)
         
@@ -120,10 +125,11 @@ class SignalAnalyzer:
         if len(self.entire_signal) > 10:
             self.perform_fft()
             
+            
     # Perform FFT analysis
     def perform_fft(self):
-        # global min01, max01, min02, max02, min03, max03, min04, max04
-        global max04, min04
+        # # global min01, max01, min02, max02, min03, max03, min04, max04
+        # global max04, min04
         
         signal_array = np.array(self.entire_signal)
         
@@ -136,79 +142,21 @@ class SignalAnalyzer:
         self.fft_freqs = freqs[:half_index]
         self.fft_amplitudes = np.abs(freq_spectrum)[:half_index]
         
+        # Find the frequency to monitor
+        self.trigger(self.fft_amplitudes)
         
         
-        # Sus frequency observer
-        # Define given values
-        fft_amplitudes = self.fft_amplitudes  # Your FFT amplitude array
-        max_frequency = 0.5  # Maximum frequency range in your FFT
-        fft_length = len(fft_amplitudes)  # Total number of FFT bins
-        frequency_resolution = max_frequency / fft_length  # Step size per bin
-
-        # Define target frequencies
-        target_frequencies = [0.1, 0.2, 0.3, 0.4]
-
-        # Compute indices
-        indices = [int(f / frequency_resolution) for f in target_frequencies if int(f / frequency_resolution) < fft_length]
-
-        # Extract values
-        extracted_values = fft_amplitudes[indices]
-        # print(f'{extracted_values = }')
-
-        # if (extracted_values[0] > max01):
-        #     max01 = extracted_values[0]
-        # elif (extracted_values[0] < min01):
-        #     min01 = extracted_values[0]
-
-        # if (extracted_values[1] > max02):
-        #     max02 = extracted_values[1]
-        # elif (extracted_values[1] < min02):
-        #     min02 = extracted_values[1]
+    def trigger(self, fft_amplitudes):
+        global mean_amplitudes
         
-        # if (extracted_values[2] > max03):
-        #     max03 = extracted_values[2]
-        # elif (extracted_values[2] < min03):
-        #     min03 = extracted_values[2]
-        # if (self.counter > 20 and extracted_values[3] > 0.2):
-            # print(f'Determined glitch at frame: {self.counter}')
-        
-        # if (extracted_values[3] > max04):
-        #     print(f'Max increase of: {extracted_values[3] - max04} at frame: {self.counter}')
-        #     if ((extracted_values[3] - max04) > 0.2 and self.counter > 25):
-        #         print(f'Determined glitch at frame: {self.counter}')
-        #     max04 = extracted_values[3]
-        # elif (extracted_values[3] < min04):
-        #     min04 = extracted_values[3]
+        # Ignore the first 1000 frames for analysis stablisation
+        if self.counter > 1000 and np.mean(fft_amplitudes) - mean_amplitudes > 2.0:
+            print(f'Determined glitch at frame: {self.counter}')
             
-        # if (extracted_values[1] > max04):
-        #     print(f'Max increase of: {(extracted_values[1] - max04)} at frame: {self.counter}')
-        #     if ((extracted_values[1] - max04) > 0.2 and self.counter > 30):
-        #         print(f'Determined glitch at frame: {self.counter}')
-        #     max04 = extracted_values[1]
-        # elif (extracted_values[1] < min04):
-        #     print(f'Min decrease of: {(min04 - extracted_values[1])} at frame: {self.counter}')
-        #     if ((min04 - extracted_values[1]) > 0.2 and self.counter > 30):
-        #         print(f'Determined glitch at frame: {self.counter}')
-        #     min04 = extracted_values[1]
+            print(f'Mean amplitude(frame {self.counter - 1}): {mean_amplitudes}')
+            print(f'Mean amplitude(frame {self.counter}): {np.mean(fft_amplitudes)}')
         
-        
-        # Print results
-        # print(f'Min 0.1: {min01}')
-        # print(f'Max 0.1: {max01}')
-        # print(f'Min 0.2: {min02}')
-        # print(f'Max 0.2: {max02}')
-        # print(f'Min 0.3: {min03}')
-        # print(f'Max 0.3: {max03}')
-        # print(f'Min 0.4: {min04}')
-        # print(f'Max 0.4: {max04}')
-        # print(f"Amplitude at 0.1 Hz: {extracted_values[0]}")
-        # print(f"Amplitude at 0.2 Hz: {extracted_values[1]}")
-        # print(f'FFT freqs: {self.fft_freqs}') # Debugging
-        
-        
-        
-        
-        
+        mean_amplitudes = np.mean(fft_amplitudes)    
         
         
     # Update the plot
@@ -253,8 +201,8 @@ class SignalAnalyzer:
             else: max_amp = 0
             
             self.ax2.set_xlim(0, 0.5) # Nyquist limit
-            self.ax2.set_ylim(0, max_amp)
-            # self.ax2.set_ylim(0, 10)
+            # self.ax2.set_ylim(0, max_amp)
+            self.ax2.set_ylim(0, 10)
             
             self.ax2.set_xlabel('Frequency')
             self.ax2.set_ylabel('Amplitude')
@@ -269,11 +217,9 @@ class SignalAnalyzer:
         # Adjust layout
         self.fig.tight_layout(pad=4.0, rect=[0, 0.03, 1, 0.97])
         
-        
-        
-        
         # return self.line1, self.line2, self.status_text
         return self.line2, self.status_text
+    
     
     # Run the analyzer
     def run(self):
@@ -285,7 +231,7 @@ class SignalAnalyzer:
         # Set up the animation
         ani = animation.FuncAnimation(self.fig, 
                                       self.update_plot, 
-                                      interval=100, 
+                                      interval=1/1000, 
                                       blit=False)
         plt.show()
         

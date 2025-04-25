@@ -38,10 +38,10 @@ def generate_float_signal(frame):
 
 
 def apply_glitch(state, glitch_performed, frame):
-    if rand.random() < 0.01:
-        state = 1 - state
-        glitch_performed = True
-        print("GLITCH PERFORMED at time: ", frame)
+    # if rand.random() < 0.01:
+    state = 1 - state
+    glitch_performed = True
+    print("GLITCH PERFORMED at time: ", frame)
     return state, glitch_performed
 
 

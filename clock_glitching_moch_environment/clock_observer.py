@@ -60,7 +60,7 @@ def main():
     ax.set_ylabel('Frequency')
     ax.legend()
 
-    def update(frame):
+    def update_observer(frame):
         ax.clear()
         ax.plot(x_data, y_data, 'b-', label='Observed Clock Frequency')
         if args.binary:
@@ -95,7 +95,7 @@ def main():
                 x_data.append(frame)
                 y_data.append(packet)
                 print(f"Received: {packet}")
-                update(frame)
+                update_observer(frame)
         except (json.JSONDecodeError, ConnectionError):
             break
 
