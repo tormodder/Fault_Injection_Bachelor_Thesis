@@ -1,34 +1,53 @@
-# New and improved instructions
-- Run `clock_freq_server.py` (unglitched) or `clock_freq_glitches_server.py`
-- Run `FFTdata_observer.py`
-- Sit back and enjoy while I continue to work on floating point jittery signals
+# Instructions
+- Clone the repo or download the following files:
+  - `clock_freq_server.py`
+  - `clock_observer.py`
+  - `FFTdata_observer.py` 
+- Run the program with the following:
+  - `python .\clock_freq_server.py`
+    - include `-b True` for binary clock signal
+    - include `-f True` for jittery floating point clock signal
+    - include `-g True` to introduce a single clock glitch
+    - include `-gf <frame>` to set which frame to glitch
+    - include `-fft True` to automatically run the `FFTdata_observer.py` program
+  - example: `python .\clock_freq_server.py -f True -g True -fft True -gf 3001`
+- `FFTdata_observer.py` is run automatically when using the `-fft` flag set to `True`
+- `clock_observer.py` is run automatically when the `-fft` flag in not set
+- Sit back and enjoy
+- Close the programs by closing the plot window
+
+## FLAGS
+```
+"-b", "--binary", type=bool, default=False
+"-f", "--float", type=bool, default=False
+"-g", "--glitch", type=bool, default=False
+"-gf", "--glitchframe", type=int, default=500
+"-fft", "--fftanalysis", type=bool, default=False
+```
+
+## Output of `-h` help flag:
+```
+python .\clock_freq_server.py -h
+
+Clock frequency server with glitching.
+
+options:
+  -h, --help            show this help message and exit
+  -b, --binary BINARY   Clean binary clock signal.
+  -f, --float FLOAT     Jittery floating point clock signal.
+  -g, --glitch GLITCH   Introduce a clock glitch.
+  -gf, --glitchframe GLITCHFRAME
+                        Frame to introduce glitch.
+  -fft, --fftanalysis FFTANALYSIS
+                        Perform FFT analysis.
+```
+
 
 # Screenshots
 Pure integer signal with FFT analysis - 507 samples
 ![Pure integer signal with FFT analysis](screenshots/Integer_clock_with_FFT_507_samples.png)
 
-Pure integer glitched signal with FFT analysis - 510 samples
-![Pure integer glitched signal with FFT analysis](screenshots/Integer_clock_with_glitches_with_FFT_510_samples.png)
-
 Pure integer glitched signal with FFT analysis - 832 samples
 ![Pure integer glitched signal with FFT analysis with increased sample size](screenshots/Integer_clock_with_glitches_with_FFT_832_samples.png)
 
 ---
-
-# Old Instructions
-
-- Run `python ./clock_freq_floatstream_glitches_server.py` first
-- Run `python ./ clock_observer_statistical_data_extractor.py` second
-- Let run for a bit to collect data
-- Close the window showing the servers output
-- The observer will do its FFT analysis and create a plot
-
-# Old Screenshots
-Clock with jitter
-![Clock with jitter](screenshots/Clock_jitter_server.png)
-
-Clock with jitter and glitch
-![Clock with jitter and glitch](screenshots/Clock_jitter_server_with_glitch.png)
-
-Observer FFT analysis output plot
-![Observer FFT analysis output plot](screenshots/Observer_FFT_analysis_output.png)

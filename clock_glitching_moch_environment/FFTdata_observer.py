@@ -117,7 +117,6 @@ class SignalAnalyzer:
         # Perform FFT analysis given enough data
         if len(self.entire_signal) > 10:
             self.perform_fft()
-            self.linear_regression(self.counter, signal)
             
             
     # Perform FFT analysis
@@ -193,8 +192,8 @@ class SignalAnalyzer:
             else: max_amp = 0
             
             self.ax2.set_xlim(0, 0.5) # Nyquist limit
-            # self.ax2.set_ylim(0, max_amp)
-            self.ax2.set_ylim(0, 10)
+            self.ax2.set_ylim(0, max_amp) # comment out for zoomed in view
+            # self.ax2.set_ylim(0, 10) # uncomment for zoomed in view
             
             self.ax2.set_xlabel('Frequency')
             self.ax2.set_ylabel('Amplitude')
