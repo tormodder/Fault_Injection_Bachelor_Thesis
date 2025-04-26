@@ -6,7 +6,7 @@ import random as rand
 import argparse
 import subprocess
 
-
+# Parse command line arguments
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Clock frequency server with glitching.")
     parser.add_argument("-b", "--binary", type=bool, default=False, help="Clean binary clock signal.")
@@ -17,6 +17,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
+# Setup the socket server
 def setup_socket():
     HOST, PORT = 'localhost', 9999
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,10 +27,12 @@ def setup_socket():
     return sock, conn
 
 
+# Generate binary clock signal
 def generate_binary_signal(frame):
     return 1 if (frame % 10) < 5 else 0
 
 
+# Generate a floating point signal with jitter
 def generate_float_signal(frame):
     if (frame % 10) < 5:
         return rand.uniform(3.2, 3.4)
@@ -37,16 +40,17 @@ def generate_float_signal(frame):
         return rand.uniform(-0.1, 0.1)
 
 
+# Apply a glitch to the signal
 def apply_glitch(state, glitch_performed, frame):
-    # if rand.random() < 0.01:
+    # if rand.random() < 0.01: # uncomment for randomization
     state = 1 - state
     glitch_performed = True
     print("GLITCH PERFORMED at time: ", frame)
     return state, glitch_performed
 
 
+# Start the observer program as a subprocess
 def start_observer(binary, float):
-    """Start the observer program as a subprocess."""
     observer_script = "./clock_observer.py"
     try:
         if binary:
@@ -58,6 +62,7 @@ def start_observer(binary, float):
         print(f"Failed to start observer program: {e}")
 
 
+# Start the FFT observer program as a subprocess
 def start_observer_fft():
     """Start the observer program as a subprocess."""
     observer_script = "./FFTdata_observer.py"

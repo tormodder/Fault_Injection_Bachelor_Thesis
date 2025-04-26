@@ -5,15 +5,8 @@ import threading
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
+from scipy import stats
 
-min01 = 200
-min02 = 200
-min03 = 200
-min04 = 200
-max01 = 0
-max02 = 0
-max03 = 0
-max04 = 0
 mean_amplitudes = 0
 
 class SignalAnalyzer:
@@ -124,13 +117,11 @@ class SignalAnalyzer:
         # Perform FFT analysis given enough data
         if len(self.entire_signal) > 10:
             self.perform_fft()
+            self.linear_regression(self.counter, signal)
             
             
     # Perform FFT analysis
     def perform_fft(self):
-        # # global min01, max01, min02, max02, min03, max03, min04, max04
-        # global max04, min04
-        
         signal_array = np.array(self.entire_signal)
         
         # Perform FFT
@@ -145,7 +136,8 @@ class SignalAnalyzer:
         # Find the frequency to monitor
         self.trigger(self.fft_amplitudes)
         
-        
+    
+    # Trigger function to determine if a glitch occurred
     def trigger(self, fft_amplitudes):
         global mean_amplitudes
         
@@ -156,7 +148,7 @@ class SignalAnalyzer:
             print(f'Mean amplitude(frame {self.counter - 1}): {mean_amplitudes}')
             print(f'Mean amplitude(frame {self.counter}): {np.mean(fft_amplitudes)}')
         
-        mean_amplitudes = np.mean(fft_amplitudes)    
+        mean_amplitudes = np.mean(fft_amplitudes)
         
         
     # Update the plot
